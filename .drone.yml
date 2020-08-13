@@ -7,13 +7,20 @@ steps:
   image: golang:1.13
   commands:
   - go build
-  when:
-    branch:
-    - master
-    event:
-    - pull_request
 
 - name: test
   image: golang:1.13
   commands:
   - go test -v
+
+- name: publish
+  image: plugins/docker
+  settings:
+    repo: foo/bar
+    tags: latest
+    dry_run: true
+  when:
+    branch:
+    - master
+    event:
+    - push
