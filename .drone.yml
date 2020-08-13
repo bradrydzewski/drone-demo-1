@@ -12,6 +12,15 @@ steps:
   image: golang:1.13
   commands:
   - go test -v
+  depends_on:
+  - build
+  
+- name: hello
+  image: golang:1.13
+  commands:
+  - echo hello
+  depends_on:
+  - build
 
 - name: publish
   image: plugins/docker
@@ -19,23 +28,7 @@ steps:
     repo: foo/bar
     tags: latest
     dry_run: true
-  when:
-    branch:
-    - master
-    event:
-    - push
+  depends_on:
+  - hello
+  - test
 
-
----
-kind: pipeline
-type: docker
-name: test
-
-steps:
-- name: build
-  image: golang:1.13
-  commands:
-  - go build
-
-depends_on:
-- build
